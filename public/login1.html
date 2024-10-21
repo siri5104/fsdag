@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Event Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="./css/login.css">
+</head>
+<body>
+    <header>
+        <div class="header-background"></div>
+        <h1>Event Management</h1>
+        <nav>
+            <ul id="nav-links">
+                <li><a href="./index.html">Home</a></li>
+                <li><a href="./about.html">About Us</a></li>
+                <li><a href="./dashboard.html">Dashboard</a></li>
+                <li><a href="./contact.html">Contact Us</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="login-container">
+        <div class="login-form">
+            <h2>Login</h2>
+            <form id="login-form">
+                <!-- ... existing input fields ... -->
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+                <div class="form-footer">
+                    <button type="submit" class="login-btn">Login</button>
+                </div>
+            </form>
+            <div class="social-login">
+                <p>Or login with:</p>
+                <button id="google-login-btn" class="social-btn">
+                    <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo">
+                    Login with Google
+                </button>
+            </div>
+            <div class="signup-prompt">
+                <p>Don't have an account? <a href="registration.html">Sign up here</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Existing login form submission script
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('http://localhost:3000/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email,
+                        password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    localStorage.setItem('userName', data.name);
+                    localStorage.setItem('loggedIn', 'true');
+                    alert('Login successful!');
+                    window.location.href = '/dashboardprofile.html';
+                } else {
+                    alert(data.error || 'Login failed');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred during login');
+            }
+        });
+
+        // Google login button click handler
+        document.getElementById('google-login-btn').addEventListener('click', () => {
+            window.location.href = 'http://localhost:3000/auth/google';
+        });
+    </script>
+</body>
+</html>
